@@ -1,9 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_rush/screens/home.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import 'loading.dart';
 import 'package:http/http.dart' as http;
 
 class Register extends StatefulWidget {
@@ -20,7 +18,6 @@ class _RegisterState extends State<Register> {
 
   final _formKey = GlobalKey<FormState>();
   final _key = GlobalKey<ScaffoldState>();
-  //UserServices _userServices = UserServices();
   TextEditingController _emailTextController = TextEditingController();
   TextEditingController _passwordTextController = TextEditingController();
   TextEditingController _nameTextController = TextEditingController();
@@ -147,7 +144,7 @@ class _RegisterState extends State<Register> {
                           controller: _numberTextController,
                           decoration: InputDecoration(
                               hintText: "Enter number",
-                              prefixIcon: Icon(Icons.email)),
+                              prefixIcon: Icon(Icons.phone)),
                           validator: (val) =>
                           val.isEmpty ? 'Enter a number' : null,
                           textAlignVertical: TextAlignVertical.bottom,
@@ -315,9 +312,10 @@ class _RegisterState extends State<Register> {
                         onTap: () async {
                           if (_formKey.currentState.validate()) {
                             http.Response res = await http.get(Uri.parse(
-                                "http://40.83.89.182:8000/artist?username=${_userNameTextController
+                                "http://40.83.89.182:8000/check_username?username=${_userNameTextController
                                     .text}"));
-                            if (res.body != "null") {
+                            Map resMap = json.decode(res.body);
+                            if (resMap.keys.toList()[0] == "501") {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                       content: Text(
