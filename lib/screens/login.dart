@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_rush/screens/nav_bar.dart';
 import 'package:flutter_rush/screens/search.dart';
 import 'package:flutter_rush/screens/register.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -57,6 +59,14 @@ class _SignInState extends State<SignIn> {
   String email = '';
   String password = '';
   String error = '';
+
+  SharedPreferences sharedPreferences;
+
+  @override
+  void initState() {
+    super.initState();
+    isSignedIn();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -156,8 +166,11 @@ class _SignInState extends State<SignIn> {
                               );
                               Map resMap = json.decode(res.body);
                               if (resMap.keys.toList()[0] == "100") {
+                                sharedPreferences.setBool("isSignedIn", true);
+                                sharedPreferences.setString("username", _usernameTextController.text);
                                 Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(builder: (_) => Search()));
+                                    MaterialPageRoute(
+                                        builder: (_) => NavBar()));
                               } else if (resMap.keys.toList()[0] == "501") {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
@@ -225,5 +238,14 @@ class _SignInState extends State<SignIn> {
           ),
         )
     );
+  }
+
+  void isSignedIn() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+    bool goToNavBar = sharedPreferences.getBool("isSignedIn") ?? false;
+    if (goToNavBar) {
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => NavBar()));
+    }
   }
 }

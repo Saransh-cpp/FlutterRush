@@ -1,9 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter_rush/screens/search.dart';
+import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_rush/screens/nav_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class Register extends StatefulWidget {
 
@@ -39,6 +42,8 @@ class _RegisterState extends State<Register> {
   bool isArtist = true;
   bool isBuyer = false;
   bool isGallery = false;
+
+  SharedPreferences sharedPreferences;
 
   @override
   void initState() {
@@ -421,6 +426,8 @@ class _RegisterState extends State<Register> {
                               if (resPostMap.keys.toList()[0] == "300" ||
                                   resPostMap.keys.toList()[0] == "700" ||
                                   resPostMap.keys.toList()[0] == "800") {
+                                sharedPreferences.setBool("isSignedIn", true);
+                                sharedPreferences.setString("username", _userNameTextController.text);
                                 Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(builder: (_) => NavBar()));
                               } else {
