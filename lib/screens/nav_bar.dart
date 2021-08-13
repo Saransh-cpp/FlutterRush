@@ -1,6 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rush/screens/home.dart';
+import 'package:flutter_rush/screens/search.dart';
 import 'package:flutter_rush/screens/profile.dart';
 import 'package:flutter_rush/screens/add_art.dart';
 
@@ -13,7 +13,7 @@ class _NavBarState extends State<NavBar> {
   PageController pageController = PageController();
   int currentIndex = 0;
   var currentTab = [
-    Home(),
+    Search(),
     AddArtWork(),
     Profile(),
   ];
@@ -40,15 +40,15 @@ class _NavBarState extends State<NavBar> {
             backgroundColor: Colors.pink[50],
             items: <Widget>[
               Icon(
-                  Icons.home_rounded,
+                  Icons.search_rounded,
                   size: 30
               ),
               Icon(
-                  Icons.menu_book_rounded,
+                  Icons.my_library_add_rounded,
                   size: 30
               ),
               Icon(
-                  Icons.shopping_cart_rounded,
+                  Icons.person,
                   size: 30
               ),
 

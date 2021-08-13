@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_rush/screens/home.dart';
+import 'package:flutter_rush/screens/search.dart';
 import 'package:flutter_rush/screens/register.dart';
 import 'package:http/http.dart' as http;
 
@@ -157,7 +157,7 @@ class _SignInState extends State<SignIn> {
                               Map resMap = json.decode(res.body);
                               if (resMap.keys.toList()[0] == "100") {
                                 Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(builder: (_) => Home()));
+                                    MaterialPageRoute(builder: (_) => Search()));
                               } else if (resMap.keys.toList()[0] == "501") {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(

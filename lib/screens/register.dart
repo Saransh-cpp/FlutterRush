@@ -1,8 +1,9 @@
 import 'dart:convert';
 
-import 'package:flutter_rush/screens/home.dart';
+import 'package:flutter_rush/screens/search.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_rush/screens/nav_bar.dart';
 
 class Register extends StatefulWidget {
 
@@ -17,12 +18,12 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
 
   final _formKey = GlobalKey<FormState>();
-  final _key = GlobalKey<ScaffoldState>();
   TextEditingController _emailTextController = TextEditingController();
   TextEditingController _passwordTextController = TextEditingController();
   TextEditingController _nameTextController = TextEditingController();
   TextEditingController _userNameTextController = TextEditingController();
   TextEditingController _numberTextController = TextEditingController();
+  TextEditingController _bioTextController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
 
 
@@ -35,10 +36,13 @@ class _RegisterState extends State<Register> {
   String userImageUrl = '';
   String userType = '';
   String selectedUserType = '';
+  bool isArtist = true;
+  bool isBuyer = false;
+  bool isGallery = false;
 
   @override
   void initState() {
-    selectedUserType = 'None';
+    selectedUserType = 'artist';
     super.initState();
   }
 
@@ -127,35 +131,79 @@ class _RegisterState extends State<Register> {
                           textAlignVertical: TextAlignVertical.bottom,
                         ),
                       ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        height: 70,
-                        width: _screenWidth,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius:
-                          BorderRadius.all(Radius.circular(10)),
-                        ),
-                        padding: EdgeInsets.all(8),
-                        margin: EdgeInsets.all(0),
-                        child: TextFormField(
-                          controller: _numberTextController,
-                          decoration: InputDecoration(
-                              hintText: "Enter number",
-                              prefixIcon: Icon(Icons.phone)),
-                          validator: (val) =>
-                          val.isEmpty ? 'Enter a number' : null,
-                          textAlignVertical: TextAlignVertical.bottom,
-                          // net ninja
-                          onChanged: (val) {
-                            setState(() {
-                              email = val;
-                            });
-                          },
+                      Visibility(
+                        visible: !isBuyer,
+                        child: SizedBox(
+                          height: 20,
                         ),
                       ),
+                      Visibility(
+                        visible: isArtist || isGallery,
+                        child: Container(
+                          height: 70,
+                          width: _screenWidth,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(10)),
+                          ),
+                          padding: EdgeInsets.all(8),
+                          margin: EdgeInsets.all(0),
+                          child: TextFormField(
+                            controller: _numberTextController,
+                            decoration: InputDecoration(
+                                hintText: "Enter number",
+                                prefixIcon: Icon(Icons.phone)),
+                            validator: (val) =>
+                            val.isEmpty ? 'Enter a number' : null,
+                            textAlignVertical: TextAlignVertical.bottom,
+                            // net ninja
+                            onChanged: (val) {
+                              setState(() {
+                                email = val;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                      Visibility(
+                        visible: isGallery,
+                        child: SizedBox(
+                          height: 20,
+                        ),
+                      ),
+                      Visibility(
+                        visible: isGallery,
+                        child: Container(
+                          height: 70,
+                          width: _screenWidth,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(10)),
+                          ),
+                          padding: EdgeInsets.all(8),
+                          margin: EdgeInsets.all(0),
+                          child: TextFormField(
+                            minLines: 1,
+                            maxLines: 5,
+                            controller: _bioTextController,
+                            decoration: InputDecoration(
+                                hintText: "Tell us about your gallery",
+                                prefixIcon: Icon(Icons.museum_rounded)),
+                            validator: (val) =>
+                            val.isEmpty ? 'Enter a bio' : null,
+                            textAlignVertical: TextAlignVertical.bottom,
+                            // net ninja
+                            onChanged: (val) {
+                              setState(() {
+                                email = val;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+
                       SizedBox(
                         height: 20,
                       ),
@@ -177,7 +225,6 @@ class _RegisterState extends State<Register> {
                           validator: (val) =>
                           val.isEmpty ? 'Enter an email' : null,
                           textAlignVertical: TextAlignVertical.bottom,
-                          // net ninja
                           onChanged: (val) {
                             setState(() {
                               email = val;
@@ -268,40 +315,52 @@ class _RegisterState extends State<Register> {
                           children: [
                             Radio(
                               activeColor: Colors.white,
-                              value: 'Artist',
+                              value: 'artist',
                               groupValue: selectedUserType,
                               onChanged: (value) {
                                 setUserType(value);
                                 setState(() {
                                   userType = value;
+                                  isArtist = true;
+                                  isGallery = false;
+                                  isBuyer = false;
                                 });
                               },
                             ),
-                            Text('Artist', style:  TextStyle(color: Colors.white),),
+                            Text(
+                              'Artist', style: TextStyle(color: Colors.white),),
                             Radio(
                               activeColor: Colors.white,
-                              value: 'Buyer',
-                              groupValue: selectedUserType,
-                              onChanged: (value) {
-                                setUserType(value);
-                                setState(() {
-                                userType = value;
-                                });
-                              },
-                            ),
-                            Text('Buyer', style:  TextStyle(color: Colors.white)),
-                            Radio(
-                              activeColor: Colors.white,
-                              value: 'Gallery',
+                              value: 'buyer',
                               groupValue: selectedUserType,
                               onChanged: (value) {
                                 setUserType(value);
                                 setState(() {
                                   userType = value;
+                                  isArtist = false;
+                                  isGallery = false;
+                                  isBuyer = true;
                                 });
                               },
                             ),
-                            Text('Gallery', style:  TextStyle(color: Colors.white)),
+                            Text(
+                                'Buyer', style: TextStyle(color: Colors.white)),
+                            Radio(
+                              activeColor: Colors.white,
+                              value: 'gallery',
+                              groupValue: selectedUserType,
+                              onChanged: (value) {
+                                setUserType(value);
+                                setState(() {
+                                  userType = value;
+                                  isGallery = true;
+                                  isArtist = false;
+                                  isBuyer = false;
+                                });
+                              },
+                            ),
+                            Text('Gallery',
+                                style: TextStyle(color: Colors.white)),
                           ],
                         ),
                       ),
@@ -322,21 +381,60 @@ class _RegisterState extends State<Register> {
                                           "The username already exists")));
                               return;
                             }
-                            var body = jsonEncode({
-                              'username': _userNameTextController.text,
-                              "name": _nameTextController.text,
-                              "email": _emailTextController.text,
-                              "phone": _numberTextController.text,
-                              "password": _passwordTextController.text,
-                              "user_type": userType
-                            });
-                            await http.post(
-                                Uri.parse("http://40.83.89.182:8000/artist"),
+                            var body;
+                            if (isBuyer) {
+                              body = jsonEncode({
+                                'username': _userNameTextController.text,
+                                "name": _nameTextController.text,
+                                "email": _emailTextController.text,
+                                "password": _passwordTextController.text,
+                                "user_type": userType
+                              });
+                            }
+                            else if (isGallery) {
+                              body = jsonEncode({
+                                'username': _userNameTextController.text,
+                                "name": _nameTextController.text,
+                                "email": _emailTextController.text,
+                                "phone": _numberTextController.text,
+                                "password": _passwordTextController.text,
+                                "bio": _bioTextController.text
+                              });
+                            }
+                            else {
+                              body = jsonEncode({
+                                'username': _userNameTextController.text,
+                                "name": _nameTextController.text,
+                                "email": _emailTextController.text,
+                                "phone": _numberTextController.text,
+                                "password": _passwordTextController.text,
+                                "user_type": userType
+                              });
+                            }
+                            http.Response resPost = await http.post(
+                                Uri.parse("http://40.83.89.182:8000/$userType"),
                                 headers: {"Content-Type": "application/json"},
                                 body: body
                             );
-                            Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(builder: (_) => Home()));
+                            try {
+                              Map resPostMap = json.decode(resPost.body);
+                              if (resPostMap.keys.toList()[0] == "300" ||
+                                  resPostMap.keys.toList()[0] == "700" ||
+                                  resPostMap.keys.toList()[0] == "800") {
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(builder: (_) => NavBar()));
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text(
+                                            "Oops, something went wrong. Please try again.")));
+                              }
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(
+                                          "Oops, something went wrong. Please try again.")));
+                            }
                           }
                         },
                         child: Container(
