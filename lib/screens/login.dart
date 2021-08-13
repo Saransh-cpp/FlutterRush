@@ -63,12 +63,6 @@ class _SignInState extends State<SignIn> {
   SharedPreferences sharedPreferences;
 
   @override
-  void initState() {
-    super.initState();
-    isSignedIn();
-  }
-
-  @override
   Widget build(BuildContext context) {
     double _screenWidth = MediaQuery
         .of(context)
@@ -157,6 +151,7 @@ class _SignInState extends State<SignIn> {
                         ),
                         InkWell(
                           onTap: () async {
+                            sharedPreferences = await SharedPreferences.getInstance();
                             if (_formKey.currentState.validate()) {
                               http.Response res = await http.get(
                                 Uri.parse(
@@ -238,14 +233,5 @@ class _SignInState extends State<SignIn> {
           ),
         )
     );
-  }
-
-  void isSignedIn() async {
-    sharedPreferences = await SharedPreferences.getInstance();
-    bool goToNavBar = sharedPreferences.getBool("isSignedIn") ?? false;
-    if (goToNavBar) {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => NavBar()));
-    }
   }
 }

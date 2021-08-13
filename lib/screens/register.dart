@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter_rush/screens/search.dart';
-import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_rush/screens/nav_bar.dart';

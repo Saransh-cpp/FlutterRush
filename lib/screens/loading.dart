@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rush/screens/login.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'nav_bar.dart';
 
 class Loading extends StatefulWidget {
   @override
@@ -7,6 +11,15 @@ class Loading extends StatefulWidget {
 }
 
 class _LoadingState extends State<Loading> {
+
+  SharedPreferences sharedPreferences;
+
+  @override
+  void initState() {
+    super.initState();
+    isSignedIn();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -27,4 +40,18 @@ class _LoadingState extends State<Loading> {
       ),
     );
   }
+
+  void isSignedIn() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+    bool goToNavBar = sharedPreferences.getBool("isSignedIn") ?? false;
+    if (goToNavBar) {
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => NavBar()));
+    } else {
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => LoginPage()));
+
+    }
+  }
+
 }
