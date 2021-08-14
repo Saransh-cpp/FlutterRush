@@ -7,6 +7,11 @@ import 'package:flutter_rush/screens/add_art.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NavBar extends StatefulWidget {
+  final isArtist;
+  final isBuyer;
+  final isGallery;
+
+  const NavBar({Key key, this.isArtist, this.isBuyer, this.isGallery}) : super(key: key);
   @override
   _NavBarState createState() => _NavBarState();
 }
@@ -15,41 +20,28 @@ class _NavBarState extends State<NavBar> {
 
   SharedPreferences sharedPreferences;
 
-  isArtist () async {
-    sharedPreferences = await SharedPreferences.getInstance();
-    return sharedPreferences.getBool('isArtist') ?? false;
-  }
-  isBuyer () async {
-    sharedPreferences = await SharedPreferences.getInstance();
-    return sharedPreferences.getBool('isBuyer') ?? false;
-  }
-  isGallery () async {
-    sharedPreferences = await SharedPreferences.getInstance();
-    return sharedPreferences.getBool('isGallery') ?? false;
-  }
-
   PageController pageController = PageController();
   int currentIndex = 0;
   List<Widget> currentTab;
 
   @override
   Widget build(BuildContext context) {
-    // if (isArtist()) {
+    if (widget.isArtist) {
       currentTab = [
         AddArtWork(),
         Profile(),
       ];
-    // } else if (isBuyer()) {
-    //   currentTab = [
-    //     AddArtWork(),
-    //     Profile(),
-    //   ];
-    // } else if (isGallery()) {
-    //   currentTab = [
-    //     AddProduct(),
-    //     Profile(),
-    //   ];
-    // }
+    } else if (widget.isBuyer) {
+      currentTab = [
+        AddArtWork(),
+        Profile(),
+      ];
+    } else if (widget.isGallery) {
+      currentTab = [
+        AddProduct(),
+        Profile(),
+      ];
+    }
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(

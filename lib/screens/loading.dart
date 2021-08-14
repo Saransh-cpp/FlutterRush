@@ -43,15 +43,18 @@ class _LoadingState extends State<Loading> {
 
   void isSignedIn() async {
     sharedPreferences = await SharedPreferences.getInstance();
+    bool isArtist = sharedPreferences.getBool('isArtist');
+    bool isBuyer = sharedPreferences.getBool('isBuyer');
+    bool isGallery = sharedPreferences.getBool('isGallery');
     bool goToNavBar = sharedPreferences.getBool("isSignedIn") ?? false;
     if (goToNavBar) {
       Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => NavBar()));
+          MaterialPageRoute(builder: (_) =>
+              NavBar(
+                isArtist: isArtist, isGallery: isGallery, isBuyer: isBuyer,)));
     } else {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => LoginPage()));
-
     }
   }
-
 }

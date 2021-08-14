@@ -188,7 +188,8 @@ class _SignInState extends State<SignIn> {
                                 },
                               ),
                               Text(
-                                'Artist', style: TextStyle(color: Colors.white),),
+                                'Artist',
+                                style: TextStyle(color: Colors.white),),
                               Radio(
                                 activeColor: Colors.white,
                                 value: 'buyer',
@@ -204,7 +205,8 @@ class _SignInState extends State<SignIn> {
                                 },
                               ),
                               Text(
-                                  'Buyer', style: TextStyle(color: Colors.white)),
+                                  'Buyer',
+                                  style: TextStyle(color: Colors.white)),
                               Radio(
                                 activeColor: Colors.white,
                                 value: 'gallery',
@@ -229,7 +231,8 @@ class _SignInState extends State<SignIn> {
                         ),
                         InkWell(
                           onTap: () async {
-                            sharedPreferences = await SharedPreferences.getInstance();
+                            sharedPreferences =
+                            await SharedPreferences.getInstance();
                             if (_formKey.currentState.validate()) {
                               http.Response res;
                               if (isArtist) {
@@ -258,13 +261,18 @@ class _SignInState extends State<SignIn> {
                               Map resMap = json.decode(res.body);
                               if (resMap.keys.toList()[0] == "100") {
                                 sharedPreferences.setBool("isSignedIn", true);
+                                sharedPreferences.setString(
+                                    "username", _usernameTextController.text);
                                 sharedPreferences.setString("username", _usernameTextController.text);
                                 if (isArtist) sharedPreferences.setBool('isArtist', true);
                                 else if (isBuyer) sharedPreferences.setBool('isBuyer', true);
                                 else if (isGallery) sharedPreferences.setBool('isGallery', true);
                                 Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
-                                        builder: (_) => NavBar()));
+                                        builder: (_) =>
+                                            NavBar(isArtist: isArtist,
+                                              isGallery: isGallery,
+                                              isBuyer: isBuyer,)));
                               } else if (resMap.keys.toList()[0] == "501") {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
