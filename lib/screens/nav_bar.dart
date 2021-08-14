@@ -12,8 +12,8 @@ class NavBar extends StatefulWidget {
 class _NavBarState extends State<NavBar> {
   PageController pageController = PageController();
   int currentIndex = 0;
-  var currentTab = [
-    Search(),
+  List<Widget> currentTab = [
+    // Search(),
     AddArtWork(),
     Profile(),
   ];
@@ -39,10 +39,10 @@ class _NavBarState extends State<NavBar> {
 
             backgroundColor: Colors.pink[50],
             items: <Widget>[
-              Icon(
-                  Icons.search_rounded,
-                  size: 30
-              ),
+              // Icon(
+              //     Icons.search_rounded,
+              //     size: 30
+              // ),
               Icon(
                   Icons.my_library_add_rounded,
                   size: 30

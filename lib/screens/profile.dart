@@ -58,7 +58,7 @@ class _ProfileState extends State<Profile> {
                           profilePic.readAsBytesSync());
                       var body = jsonEncode({
                         "username": sharedPreferences.getString("username"),
-                        "dp": imageString
+                        "dp": profilePic
                       });
                       print(body);
                       http.Response resPost = await http.post(

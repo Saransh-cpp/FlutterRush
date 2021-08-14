@@ -6,6 +6,7 @@ import 'package:flutter_rush/utils/image_converter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AddArtWork extends StatefulWidget {
@@ -25,7 +26,6 @@ class _AddArtWorkState extends State<AddArtWork> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.pink[50],
-      appBar: AppBar(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -84,20 +84,20 @@ class _AddArtWorkState extends State<AddArtWork> {
                 if (_formKey.currentState.validate()) {
                   if (artWork != null) {
                     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-                    final imageString = ImageConverter.base64StringFromImage(
-                        artWork.readAsBytesSync());
-                    var body = jsonEncode({
-                      "username": sharedPreferences.getString("username"),
-                      "name": _nameTextController.text,
-                      "artwork": imageString
-                    });
-                    print(body);
-                    http.Response resPost = await http.post(
-                        Uri.parse("http://40.83.89.182:8000/artwork"),
-                        headers: {"Content-Type": "application/json"},
-                        body: body
+                    var req = http.MultipartRequest('POST', Uri.parse("http://40.83.89.182:8000/artwork"));
+                    req.fields['username'] = sharedPreferences.getString("username");
+                    req.fields['name'] = _nameTextController.text;
+                    req.files.add(
+                        http.MultipartFile.fromBytes(
+                            'picture',
+                            artWork.readAsBytesSync(),
+                            filename: _nameTextController.text
+                            // contentType: MediaType('image', 'jpeg')
+                        )
                     );
-                    print(resPost.body);
+                    var res = await req.send();
+                    print(res.headers);
+                    print(res.statusCode);
                   } else {
                     Fluttertoast.showToast(
                         msg: "Please select an image",
