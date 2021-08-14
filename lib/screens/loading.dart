@@ -43,9 +43,9 @@ class _LoadingState extends State<Loading> {
 
   void isSignedIn() async {
     sharedPreferences = await SharedPreferences.getInstance();
-    bool isArtist = sharedPreferences.getBool('isArtist');
-    bool isBuyer = sharedPreferences.getBool('isBuyer');
-    bool isGallery = sharedPreferences.getBool('isGallery');
+    bool isArtist = sharedPreferences.getBool('isArtist') ?? false;
+    bool isBuyer = sharedPreferences.getBool('isBuyer') ?? false;
+    bool isGallery = sharedPreferences.getBool('isGallery') ?? false;
     bool goToNavBar = sharedPreferences.getBool("isSignedIn") ?? false;
     if (goToNavBar) {
       Navigator.of(context).pushReplacement(
