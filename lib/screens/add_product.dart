@@ -100,6 +100,9 @@ class _AddProductState extends State<AddProduct> {
                           textAlignVertical: TextAlignVertical.bottom,
                         ),
                       ),
+                      SizedBox(
+                        height: 20,
+                      ),
                       Container(
                           height: 70,
                           width: _screenWidth,
@@ -247,9 +250,21 @@ class _AddProductState extends State<AddProduct> {
                           var uuid = Uuid();
                           var productId = uuid.v1();
                           if (_formKey.currentState.validate()) {
+                            http.Response res = await http.get(Uri.parse(
+                                "http://40.83.89.182:8000/check_username?username=${_userNameTextController
+                                    .text}"));
+                            Map resMap = json.decode(res.body);
+                            if (resMap.keys.toList()[0] == "500") {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(
+                                          "The username does not exist")));
+                              return;
+                            }
+                            print(productId);
                             var body = jsonEncode({
                               "product_id": productId,
-                              "name": _nameTextController,
+                              "name": _nameTextController.text,
                               'artist_username': _userNameTextController.text,
                               "artist_name": _artistNameTextController.text,
                               "genre": _genreTextController.text,
@@ -299,7 +314,7 @@ class _AddProductState extends State<AddProduct> {
                             borderRadius: BorderRadius.all(Radius.circular(12)),
                           ),
                           child: Text(
-                            "Sign Up",
+                            "Add product",
                             style: Theme
                                 .of(context)
                                 .textTheme

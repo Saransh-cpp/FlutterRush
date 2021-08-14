@@ -33,7 +33,7 @@ class _NavBarState extends State<NavBar> {
       ];
     } else if (widget.isBuyer) {
       currentTab = [
-        AddArtWork(),
+        // AddArtWork(),
         Profile(),
       ];
     } else if (widget.isGallery) {
@@ -76,7 +76,7 @@ class _NavBarState extends State<NavBar> {
 
 
             backgroundColor: Colors.pink[50],
-            items: <Widget>[
+            items: !widget.isBuyer ? <Widget>[
               // Icon(
               //     Icons.search_rounded,
               //     size: 30
@@ -90,6 +90,11 @@ class _NavBarState extends State<NavBar> {
                   size: 30
               ),
 
+            ]: <Widget>[
+              Icon(
+                  Icons.person,
+                  size: 30
+              ),
             ],
             index: currentIndex,
             animationCurve: Curves.easeInToLinear,
