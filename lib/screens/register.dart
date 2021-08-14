@@ -427,6 +427,13 @@ class _RegisterState extends State<Register> {
                                   resPostMap.keys.toList()[0] == "800") {
                                 sharedPreferences.setBool("isSignedIn", true);
                                 sharedPreferences.setString("username", _userNameTextController.text);
+                                if (userType == 'artist') {
+                                  sharedPreferences.setBool('isArtist', true);
+                                } else if (userType == 'buyer') {
+                                  sharedPreferences.setBool('isBuyer', true);
+                                } if (userType == 'gallery') {
+                                  sharedPreferences.setBool('isGallery', true);
+                                }
                                 Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(builder: (_) => NavBar()));
                               } else {

@@ -50,7 +50,6 @@ class _SignInState extends State<SignIn> {
   TextEditingController _usernameTextController = TextEditingController();
   TextEditingController _passwordTextController = TextEditingController();
 
-
   final _formKey = GlobalKey<FormState>();
   final _key = GlobalKey<ScaffoldState>();
   bool loading = false;
@@ -59,8 +58,25 @@ class _SignInState extends State<SignIn> {
   String email = '';
   String password = '';
   String error = '';
+  String selectedUserType = '';
+  String userType;
+  bool isArtist = true;
+  bool isBuyer = false;
+  bool isGallery = false;
 
   SharedPreferences sharedPreferences;
+
+  @override
+  void initState() {
+    selectedUserType = 'artist';
+    super.initState();
+  }
+
+  void setUserType(String val) {
+    setState(() {
+      selectedUserType = val;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -149,20 +165,103 @@ class _SignInState extends State<SignIn> {
                         SizedBox(
                           height: 20,
                         ),
+                        Theme(
+                          data: ThemeData(
+                            //here change to your color
+                            unselectedWidgetColor: Colors.white,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Radio(
+                                activeColor: Colors.white,
+                                value: 'artist',
+                                groupValue: selectedUserType,
+                                onChanged: (value) {
+                                  setUserType(value);
+                                  setState(() {
+                                    userType = value;
+                                    isArtist = true;
+                                    isGallery = false;
+                                    isBuyer = false;
+                                  });
+                                },
+                              ),
+                              Text(
+                                'Artist', style: TextStyle(color: Colors.white),),
+                              Radio(
+                                activeColor: Colors.white,
+                                value: 'buyer',
+                                groupValue: selectedUserType,
+                                onChanged: (value) {
+                                  setUserType(value);
+                                  setState(() {
+                                    userType = value;
+                                    isArtist = false;
+                                    isGallery = false;
+                                    isBuyer = true;
+                                  });
+                                },
+                              ),
+                              Text(
+                                  'Buyer', style: TextStyle(color: Colors.white)),
+                              Radio(
+                                activeColor: Colors.white,
+                                value: 'gallery',
+                                groupValue: selectedUserType,
+                                onChanged: (value) {
+                                  setUserType(value);
+                                  setState(() {
+                                    userType = value;
+                                    isGallery = true;
+                                    isArtist = false;
+                                    isBuyer = false;
+                                  });
+                                },
+                              ),
+                              Text('Gallery',
+                                  style: TextStyle(color: Colors.white)),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
                         InkWell(
                           onTap: () async {
                             sharedPreferences = await SharedPreferences.getInstance();
                             if (_formKey.currentState.validate()) {
-                              http.Response res = await http.get(
-                                Uri.parse(
-                                    "http://40.83.89.182:8000/artistlogin?username=${_usernameTextController
-                                        .text}&password=${_passwordTextController
-                                        .text}"),
-                              );
+                              http.Response res;
+                              if (isArtist) {
+                                res = await http.get(
+                                  Uri.parse(
+                                      "http://40.83.89.182:8000/artistlogin?username=${_usernameTextController
+                                          .text}&password=${_passwordTextController
+                                          .text}"),
+                                );
+                              } else if (isBuyer) {
+                                res = await http.get(
+                                  Uri.parse(
+                                      "http://40.83.89.182:8000/buyerlogin?username=${_usernameTextController
+                                          .text}&password=${_passwordTextController
+                                          .text}"),
+                                );
+                              } else if (isGallery) {
+                                res = await http.get(
+                                  Uri.parse(
+                                      "http://40.83.89.182:8000/gallerylogin?username=${_usernameTextController
+                                          .text}&password=${_passwordTextController
+                                          .text}"),
+                                );
+                              }
+                              print(res.body);
                               Map resMap = json.decode(res.body);
                               if (resMap.keys.toList()[0] == "100") {
                                 sharedPreferences.setBool("isSignedIn", true);
                                 sharedPreferences.setString("username", _usernameTextController.text);
+                                if (isArtist) sharedPreferences.setBool('isArtist', true);
+                                else if (isBuyer) sharedPreferences.setBool('isBuyer', true);
+                                else if (isGallery) sharedPreferences.setBool('isGallery', true);
                                 Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                         builder: (_) => NavBar()));
